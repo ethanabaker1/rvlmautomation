@@ -1,7 +1,7 @@
 %Light Study Data Automation Tool
 %Ethan Baker, eab109(at)pitt.edu
 %Yates Lab, University of Pittsburgh
-%Last Updated: 1/8/15 @ 9:50AM;
+%Last Updated: 1/12/15 @ 7:40PM by Ethan Baker;
 %%%%%%%%%%%%%%%%%%%%%%
 %IMPORTANT: This software requires the following dependencies: Signal
 %Processing Toolbox, risingEdge.m. M files must be loaded
@@ -10,16 +10,15 @@
 %sure to generate the HR channel in SPIKE2.
 %%%%%%%%%%%%%%%%%%%%%%
 
-function dataMatrix = analyzeRVLM(inputPath);
+function dataMatrix = analyzeRVLM(inputPath)
 dataMatrix = [];
-
 %Get files
 path = inputPath;
 s=what(inputPath); %Gets info about selected dir
 matfiles=s.mat; % gets .MAT file names
-%cd(path);
+cd(path);
 for a=1:numel(matfiles); %Load .MAT files
-    load(char(matfiles(a)));
+    load((char(matfiles(a))));
 end
 
 %Run Calculations on R1, if it exists.
@@ -45,8 +44,8 @@ if exist('R1_Ch14')==1
     table_time_data = horzcat(table_timematrix,R1_Ch12.values);
 
     %Generate Carotid-Time Matricies
-    carotid_time_start = R1_Ch133.start;
-    carotid_time_interval = R1_Ch133.interval;
+    carotid_time_start = R1_Ch13.start;
+    carotid_time_interval = R1_Ch13.interval;
     carotid_time_length = R1_Ch13.length;
     carotid_end_time = carotid_time_length/(1/carotid_time_interval);
     carotid_timematrix = (carotid_time_start:carotid_time_interval:carotid_end_time);
@@ -61,7 +60,7 @@ if exist('R1_Ch14')==1
     invSmoothData = -smoothData;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %This section replaces risingEdge2.m
-    threshold = invSmoothData(57)+.003;
+    threshold = invSmoothData(57)+.0185;
     data=invSmoothData;
     offsetData = [data(2:end); NaN];
     lightpeaks = find(data < threshold & offsetData > threshold);
@@ -167,8 +166,8 @@ if exist('R1_Ch14')==1
     z = find((HR_times(:,1)>=seg1_start) & (HR_times(:,1)<=seg1_end));
     beat_num = numel(z); 
     HR_interval= seg1_end - seg1_start;
-    seg1_avgHR = beat_num/HR_interval;
 
+    seg1_avgHR = beat_num/HR_interval;
     %Segment 2a - 5 Seconds After Light Offset
     seg2a_start = T1_off;
     seg2a_end = T1_off + 5;
@@ -213,9 +212,8 @@ if exist('R1_Ch14')==1
     HR_interval = seg4_end - seg4_start;
     seg4_avgHR = beat_num/HR_interval;
 
-    %Generate Output Matrix
-    R1_Output1 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-    R1_1_table = array2table(R1_Output1,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+    %Generate Output Matrix - R1,T1
+    dataMatrix(end+1,:) = [1.1,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     %Calculate Regions of Interest for second trial, if it exists.
 
@@ -277,9 +275,9 @@ if exist('R1_Ch14')==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R1_Output2 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R1_2_table = array2table(R1_Output2,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+        %Generate Output Matrix - R1,T2
+        dataMatrix(end+1,:) = [1.2,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
+
 
     end
 
@@ -343,9 +341,9 @@ if exist('R1_Ch14')==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R1_Output3 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R1_3_table = array2table(R1_Output3,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+        %Generate Output Matrix - R1,T3
+        dataMatrix(end+1,:) = [1.3,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
+
 
     end
 
@@ -409,9 +407,8 @@ if exist('R1_Ch14')==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R1_Output4 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R1_4_table = array2table(R1_Output4,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+        %Generate Output Matrix - R1,T4
+        dataMatrix(end+1,:) = [1.4,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     end
 
@@ -475,9 +472,8 @@ if exist('R1_Ch14')==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R1_Output5 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R1_5_table = array2table(R1_Output5,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+        %Generate Output Matrix - R1,T5
+        dataMatrix(end+1,:) = [1.5,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     end
 end
@@ -505,9 +501,9 @@ if exist('R2_Ch14')==1
     table_time_data = horzcat(table_timematrix,R2_Ch12.values);
 
     %Generate Carotid-Time Matricies
-    carotid_time_start = R2_Ch12.start;
-    carotid_time_interval = R2_Ch12.interval;
-    carotid_time_length = R2_Ch12.length;
+    carotid_time_start = R2_Ch13.start;
+    carotid_time_interval = R2_Ch13.interval;
+    carotid_time_length = R2_Ch13.length;
     carotid_end_time = carotid_time_length/(1/carotid_time_interval);
     carotid_timematrix = (carotid_time_start:carotid_time_interval:carotid_end_time);
     carotid_timematrix = carotid_timematrix' ;
@@ -521,7 +517,7 @@ if exist('R2_Ch14')==1
     smoothData = sgolayfilt(light_values,7,21);
     invSmoothData = -smoothData;
     %This section replaces risingEdge2.m
-    threshold = invSmoothData(57)+.003;
+    threshold = invSmoothData(57)+.0185;
     data=invSmoothData;
     offsetData = [data(2:end); NaN];
     lightpeaks = find(data < threshold & offsetData > threshold);
@@ -673,9 +669,8 @@ if exist('R2_Ch14')==1
     HR_interval = seg4_end - seg4_start;
     seg4_avgHR = beat_num/HR_interval;
 
-    %Generate Output Matrix
-    R2_Output1 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-    R2_1_table = array2table(R2_Output1,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+    %Generate Output Matrix - R2,T1
+    dataMatrix(end+1,:) = [2.1,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
    
     %Calculate Regions of Interest for second trial, if it exists.
 
@@ -737,9 +732,8 @@ if exist('R2_Ch14')==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R2_Output2 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R2_2_table = array2table(R2_Output2,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+        %Generate Output Matrix - R2,T2
+        dataMatrix(end+1,:) = [2.2,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     end
 
@@ -803,9 +797,8 @@ if exist('R2_Ch14')==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R2_Output3 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R2_3_table = array2table(R2_Output3,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+        %Generate Output Matrix - R2,T3
+        dataMatrix(end+1,:) = [2.3,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     end
 
@@ -869,9 +862,8 @@ if exist('R2_Ch14')==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R2_Output4 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R2_4_table = array2table(R2_Output4,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+        %Generate Output Matrix - R2,T4
+        dataMatrix(end+1,:) = [2.4,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     end
 
@@ -935,9 +927,8 @@ if exist('R2_Ch14')==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R2_Output5 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R2_5_table = array2table(R2_Output5,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+        %Generate Output Matrix - R2,T5
+        dataMatrix(end+1,:) = [2.5,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     end
     
@@ -983,7 +974,7 @@ if exist('R3_Ch14')==1
     %Find Peaks in Light Waveform
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %This section replaces risingEdge2.m
-    threshold = invSmoothData(57)+.003;
+    threshold = invSmoothData(57)+.0185;
     data=invSmoothData;
     offsetData = [data(2:end); NaN];
     lightpeaks = find(data < threshold & offsetData > threshold);
@@ -1135,9 +1126,8 @@ if exist('R3_Ch14')==1
     HR_interval = seg4_end - seg4_start;
     seg4_avgHR = beat_num/HR_interval;
 
-    %Generate Output Matrix
-    R3_Output1 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-    R3_1_table = array2table(R3_Output1,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+    %Generate Output Matrix - R3,T1
+    dataMatrix(end+1,:) = [3.1,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     %Calculate Regions of Interest for second trial, if it exists.
 
@@ -1199,9 +1189,8 @@ if exist('R3_Ch14')==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R3_Output2 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R3_2_table = array2table(R3_Output2,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+        %Generate Output Matrix - R3,T2
+        dataMatrix(end+1,:) = [3.2,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     end
 
@@ -1265,9 +1254,8 @@ if exist('R3_Ch14')==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R3_Output3 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R3_3_table = array2table(R3_Output3,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+        %Generate Output Matrix - R3,T3
+        dataMatrix(end+1,:) = [3.3,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     end
 
@@ -1331,9 +1319,8 @@ if exist('R3_Ch14')==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R3_Output4 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R3_4_table = array2table(R3_Output4,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+        %Generate Output Matrix - R3,T4
+        dataMatrix(end+1,:) = [3.4,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     end
 
@@ -1397,15 +1384,14 @@ if exist('R3_Ch14')==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R3_Output5 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R3_5_table = array2table(R3_Output5,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+        %Generate Output Matrix - R3,T5
+        dataMatrix(end+1,:) = [3.5,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     end
 end
 
 %Run Calculations on R4, if it exists.
-if exist('R4_Ch14') ==1
+if exist('R4_Ch14')==1
     %Generate light-time matrix
     light_time_start = R4_Ch14.start; 
     light_time_interval = R4_Ch14.interval;
@@ -1443,7 +1429,7 @@ if exist('R4_Ch14') ==1
     invSmoothData = -smoothData;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %This section replaces risingEdge2.m
-    threshold = invSmoothData(57)+.003;
+    threshold = invSmoothData(57)+.0185;
     data=invSmoothData;
     offsetData = [data(2:end); NaN];
     lightpeaks = find(data < threshold & offsetData > threshold);
@@ -1596,9 +1582,8 @@ if exist('R4_Ch14') ==1
     HR_interval = seg4_end - seg4_start;
     seg4_avgHR = beat_num/HR_interval;
 
-    %Generate Output Matrix
-    R4_Output1 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-    R4_1_table = array2table(R4_Output1,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+    %Generate Output Matrix - R4,T1
+    dataMatrix(end+1,:) = [4.1,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     %Calculate Regions of Interest for second trial, if it exists.
 
@@ -1660,9 +1645,8 @@ if exist('R4_Ch14') ==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R4_Output2 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R4_2_table = array2table(R4_Output2,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+        %Generate Output Matrix - R4,T2
+        dataMatrix(end+1,:) = [4.2,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     end
 
@@ -1726,9 +1710,8 @@ if exist('R4_Ch14') ==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R4_Output3 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R4_3_table = array2table(R4_Output3,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+        %Generate Output Matrix - R4,T3
+        dataMatrix(end+1,:) = [4.3,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     end
 
@@ -1792,9 +1775,8 @@ if exist('R4_Ch14') ==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R4_Output4 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R4_4_table = array2table(R4_Output4,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+        %Generate Output Matrix - R4,T4
+        dataMatrix(end+1,:) = [4.4,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     end
 
@@ -1858,9 +1840,8 @@ if exist('R4_Ch14') ==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R4_Output5 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R4_5_table = array2table(R4_Output5,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+        %Generate Output Matrix - R4,T5
+        dataMatrix(end+1,:) = [4.5,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     end
 end
@@ -1904,13 +1885,14 @@ if exist('R5_Ch14')==1
     invSmoothData = -smoothData;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %This section replaces risingEdge2.m
-    threshold = invSmoothData(57)+.003;
+    threshold = invSmoothData(57)+.0185;
     data=invSmoothData;
     offsetData = [data(2:end); NaN];
     lightpeaks = find(data < threshold & offsetData > threshold);
     %lightpeaks = risingEdge2(light_timematrix,invSmoothData);
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     [m,n] = size(lightpeaks);
+    %disp(m);
     if m==10
         lightonsets = [lightpeaks(1,1),lightpeaks(3,1),lightpeaks(5,1), lightpeaks(7,1), lightpeaks(9,1)];
         lightonsets = lightonsets';
@@ -2056,9 +2038,8 @@ if exist('R5_Ch14')==1
     HR_interval = seg4_end - seg4_start;
     seg4_avgHR = beat_num/HR_interval;
 
-    %Generate Output Matrix
-    R5_Output1 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-    R5_1_table = array2table(R5_Output1,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+    %Generate Output Matrix - R5,T1
+    dataMatrix(end+1,:) = [5.1,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     %Calculate Regions of Interest for second trial, if it exists.
 
@@ -2120,9 +2101,8 @@ if exist('R5_Ch14')==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R5_Output2 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R5_2_table = array2table(R5_Output2,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+        %Generate Output Matrix - R5,T2
+        dataMatrix(end+1,:) = [5.2,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     end
 
@@ -2186,9 +2166,8 @@ if exist('R5_Ch14')==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R5_Output3 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R5_3_table = array2table(R5_Output3,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'})
+        %Generate Output Matrix - R5,T3
+        dataMatrix(end+1,:) = [5.3,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     end
 
@@ -2252,9 +2231,8 @@ if exist('R5_Ch14')==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R5_Output4 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R5_4_table = array2table(R5_Output4,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'});
+        %Generate Output Matrix - R5,T4
+        dataMatrix(end+1,:) = [5.4,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
     end
 
     %Calculate Regions of Interest for 5th trial, if it exists.
@@ -2317,9 +2295,8 @@ if exist('R5_Ch14')==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R5_Output5 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R5_5_table = array2table(R5_Output5,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'});
+        %Generate Output Matrix - R5,T5
+        dataMatrix(end+1,:) = [5.5,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
     end
 end
 
@@ -2363,7 +2340,7 @@ if exist('R6_Ch14')==1
     invSmoothData = -smoothData;
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %This section replaces risingEdge2.m
-    threshold = invSmoothData(57)+.003;
+    threshold = invSmoothData(57)+.0185;
     data=invSmoothData;
     offsetData = [data(2:end); NaN];
     lightpeaks = find(data < threshold & offsetData > threshold);
@@ -2515,10 +2492,9 @@ if exist('R6_Ch14')==1
     HR_interval = seg4_end - seg4_start;
     seg4_avgHR = beat_num/HR_interval;
 
-    %Generate Output Matrix
-    R6_Output1 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-    R6_1_table = array2table(R6_Output1,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'});
-
+    %Generate Output Matrix - R6,T1
+    dataMatrix(end+1,:) = [6.1,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
+    
     %Calculate Regions of Interest for second trial, if it exists.
 
     a = exist('T2');
@@ -2580,9 +2556,8 @@ if exist('R6_Ch14')==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R6_Output2 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R6_2_table = array2table(R6_Output2,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'});
+        %Generate Output Matrix - R6,T2
+        dataMatrix(end+1,:) = [6.2,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     end
 
@@ -2646,9 +2621,8 @@ if exist('R6_Ch14')==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R6_Output3 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R6_3_table = array2table(R6_Output3,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'});
+        %Generate Output Matrix - R6,T3
+        dataMatrix(end+1,:) = [6.3,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     end
 
@@ -2712,9 +2686,8 @@ if exist('R6_Ch14')==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R6_Output4 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R6_4_table = array2table(R6_Output4,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'});
+        %Generate Output Matrix - R6,T4
+        dataMatrix(end+1,:) = [6.4,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     end
 
@@ -2778,17 +2751,9 @@ if exist('R6_Ch14')==1
         HR_interval = seg4_end - seg4_start;
         seg4_avgHR = beat_num/HR_interval;
 
-        %Generate Output Matrix
-        R6_Output5 = [seg1_avgHR,seg2a_avgHR,seg2_avgHR,seg3_avgHR,seg4_avgHR;seg1_mean_flow,seg2a_mean_flow,seg2_mean_flow,seg3_mean_flow,seg4_mean_flow];
-        R6_5_table = array2table(R6_Output5,'VariableNames',{'Seg1' 'Seg2a' 'Seg2' 'Seg3' 'Seg4'}, 'RowNames',{'HR' 'Flow'});
+        %Generate Output Matrix - R6,T5
+        dataMatrix(end+1,:) = [6.5,seg1_avgHR,seg1_mean_flow,seg2a_avgHR,seg2a_mean_flow,seg2_avgHR,seg2_mean_flow,seg3_avgHR,seg3_mean_flow,seg4_avgHR,seg4_mean_flow];
 
     end
 end
-%Exports to Excel ----Doesn't quite work properly (yet)
-%Another Note: MATLAB only supports writing to Excel files on Windows. 
-filename = 'output.xlsx';
-sheet = 1;
-xlRange = 'A1';
-A = R1_Output1
-xlswrite(filename,A);
-
+end
