@@ -42,7 +42,7 @@ if exist('R1_Ch14')==1
     table_time_data = horzcat(table_timematrix,R1_Ch12.values);
 
     %Generate Carotid-Time Matricies
-    carotid_time_start = R1_Ch133.start;
+    carotid_time_start = R1_Ch13.start;
     carotid_time_interval = R1_Ch13.interval;
     carotid_time_length = R1_Ch13.length;
     carotid_end_time = carotid_time_length/(1/carotid_time_interval);
@@ -503,9 +503,9 @@ if exist('R2_Ch14')==1
     table_time_data = horzcat(table_timematrix,R2_Ch12.values);
 
     %Generate Carotid-Time Matricies
-    carotid_time_start = R2_Ch12.start;
-    carotid_time_interval = R2_Ch12.interval;
-    carotid_time_length = R2_Ch12.length;
+    carotid_time_start = R2_Ch13.start;
+    carotid_time_interval = R2_Ch13.interval;
+    carotid_time_length = R2_Ch13.length;
     carotid_end_time = carotid_time_length/(1/carotid_time_interval);
     carotid_timematrix = (carotid_time_start:carotid_time_interval:carotid_end_time);
     carotid_timematrix = carotid_timematrix' ;
