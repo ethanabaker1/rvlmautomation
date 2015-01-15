@@ -1,6 +1,7 @@
 %Light Study Data Automation GUI
 %Neesirg Patel, nmp52(at)pitt.edu
 %Yates Lab, University of Pittsburgh
+%Last Updated: 1/14/15 @ 11:00AM by Neesirg Patel;
 
 function varargout = design(varargin)
 % DESIGN M-file for design.fig
@@ -26,7 +27,7 @@ function varargout = design(varargin)
 
 % Edit the above text to modify the response to help design
 
-% Last Modified by GUIDE v2.5 05-Jan-2015 16:56:48
+% Last Modified by GUIDE v2.5 14-Jan-2015 11:02:00
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -51,6 +52,7 @@ end
 function design_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for design
 handles.output = hObject;
+movegui('center');
 % Update handles structure
 guidata(hObject, handles);
 
@@ -100,13 +102,24 @@ else
 end
 
 
-% --- Callback for Analyze Button
+% --- Callback for 'Analyze' Button
 function pushbutton4_Callback(hObject, eventdata, handles)
-set(handles.pushbutton4, 'Enable', 'off');
 dataMatrix = analyzeRVLM(handles.in); % call automation function for RVLM study
 a = xlsread(handles.out);
 nRows = size(a,1);
-xlswrite(handles.out, cellstr(handles.date), 'Sheet1', strcat('A', num2str(nRows+2), ':', 'A', num2str(nRows+1+size(dataMatrix,1))));
-xlswrite(handles.out, dataMatrix, 'Sheet1', strcat('B', num2str(nRows+2)));
-guidata(hObject, handles);
+set(handles.pushbutton4, 'Enable', 'off');
+set(handles.pushbutton5, 'Visible', 'on');
+if (size(dataMatrix) == [0,0])
+    msgbox('No data was written to the output file', 'Input Error');
+    guidata(hObject, handles);
+else
+    xlswrite(handles.out, cellstr(handles.date), 'Sheet1', strcat('A', num2str(nRows+2), ':', 'A', num2str(nRows+1+size(dataMatrix,1))));
+    xlswrite(handles.out, dataMatrix, 'Sheet1', strcat('B', num2str(nRows+2)));
+    guidata(hObject, handles);
+end
 
+
+% --- Callback for 'Start Over' Button
+function pushbutton5_Callback(hObject, eventdata, handles)
+close(gcbf);
+design;
