@@ -1,7 +1,7 @@
 %Light Study Data Automation Tool
 %Ethan Baker, eab109(at)pitt.edu
 %Yates Lab, University of Pittsburgh
-%Last Updated: 1/12/15 @ 7:40PM by Ethan Baker;
+%Last Updated: 1/12/15 @7:40PM by Ethan Baker;
 %%%%%%%%%%%%%%%%%%%%%%
 %IMPORTANT: This software requires the following dependencies: Signal
 %Processing Toolbox, risingEdge.m. M files must be loaded
@@ -20,6 +20,72 @@ cd(path);
 for a=1:numel(matfiles); %Load .MAT files
     load((char(matfiles(a))));
 end
+%Rename files if necessary%%%%%%
+if exist('R1_32_bit__Ch12')==1
+    R1_Ch12=R1_32_bit__Ch12;
+end
+if exist('R1_32_bit__Ch13')==1
+    R1_Ch13=R1_32_bit__Ch13;
+end
+if exist('R1_32_bit__Ch14')==1
+    R1_Ch14=R1_32_bit__Ch14;
+end
+if exist('R1_32_bit__Ch4')==1
+    R1_Ch4=R1_32_bit__Ch4;
+end
+%Rename R2
+if exist('R2_32_bit__Ch12')==1
+    R2_Ch12=R2_32_bit__Ch12;
+end
+if exist('R2_32_bit__Ch13')==1
+    R2_Ch13=R2_32_bit__Ch13;
+end
+if exist('R2_32_bit__Ch14')==1
+    R2_Ch14=R2_32_bit__Ch14;
+end
+if exist('R2_32_bit__Ch4')==1
+    R2_Ch4=R2_32_bit__Ch4;
+end
+%Rename R3
+if exist('R3_32_bit__Ch12')==1
+    R3_Ch12=R3_32_bit__Ch12;
+end
+if exist('R3_32_bit__Ch13')==1
+    R3_Ch13=R3_32_bit__Ch13;
+end
+if exist('R3_32_bit__Ch14')==1
+    R3_Ch14=R3_32_bit__Ch14;
+end
+if exist('R3_32_bit__Ch4')==1
+    R3_Ch4=R3_32_bit__Ch4;
+end
+%Rename R4
+if exist('R4_32_bit__Ch12')==1
+    R4_Ch12=R4_32_bit__Ch12;
+end
+if exist('R4_32_bit__Ch13')==1
+    R4_Ch13=R4_32_bit__Ch13;
+end
+if exist('R4_32_bit__Ch14')==1
+    R4_Ch14=R4_32_bit__Ch14;
+end
+if exist('R4_32_bit__Ch4')==1
+    R4_Ch4=R4_32_bit__Ch4;
+end
+%Rename R5
+if exist('R5_32_bit__Ch12')==1
+    R5_Ch12=R5_32_bit__Ch12;
+end
+if exist('R5_32_bit__Ch13')==1
+    R5_Ch13=R5_32_bit__Ch13;
+end
+if exist('R5_32_bit__Ch14')==1
+    R5_Ch14=R5_32_bit__Ch14;
+end
+if exist('R5_32_bit__Ch4')==1
+    R5_Ch4=R5_32_bit__Ch4;
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Run Calculations on R1, if it exists.
 if exist('R1_Ch14')==1
@@ -31,6 +97,11 @@ if exist('R1_Ch14')==1
     light_end_time = light_time_length/(1/light_time_interval);
     light_timematrix = (light_time_start:light_time_interval:light_end_time); %Generates an array with time based on start time, end time, recording interval.
     light_timematrix = light_timematrix' ; %Transposes light array.
+     [w,x]= size(light_timematrix);
+    [y,z] = size(R1_Ch12.values);
+    if w-y==1
+        light_timematrix(1,:)=[];
+    end
     light_time_data = horzcat(light_timematrix,R1_Ch14.values); %Constructs 2 column array (Time|Value)
 
     %Generate Table-Time matrix
@@ -41,6 +112,11 @@ if exist('R1_Ch14')==1
     table_end_time = table_time_length/(1/table_time_interval);
     table_timematrix = (table_time_start:table_time_interval:table_end_time);
     table_timematrix = table_timematrix' ;
+    [w,x]= size(table_timematrix);
+    [y,z] = size(R1_Ch12.values);
+    if w-y==1
+        table_timematrix(1,:)=[];
+    end
     table_time_data = horzcat(table_timematrix,R1_Ch12.values);
 
     %Generate Carotid-Time Matricies
@@ -50,6 +126,11 @@ if exist('R1_Ch14')==1
     carotid_end_time = carotid_time_length/(1/carotid_time_interval);
     carotid_timematrix = (carotid_time_start:carotid_time_interval:carotid_end_time);
     carotid_timematrix = carotid_timematrix' ;
+     [w,x]= size(carotid_timematrix);
+    [y,z] = size(R1_Ch13.values);
+    if w-y==1
+        carotid_timematrix(1,:)=[];
+    end
     carotid_time_data = horzcat(carotid_timematrix,R1_Ch13.values);
 
     %Declare HR times
@@ -488,6 +569,11 @@ if exist('R2_Ch14')==1
     light_end_time = light_time_length/(1/light_time_interval);
     light_timematrix = (light_time_start:light_time_interval:light_end_time); %Generates an array with time based on start time, end time, recording interval.
     light_timematrix = light_timematrix' ; %Transposes light array.
+     [w,x]= size(light_timematrix);
+    [y,z] = size(R2_Ch14.values);
+    if w-y==1
+        light_timematrix(1,:)=[];
+    end
     light_time_data = horzcat(light_timematrix,R2_Ch14.values); %Constructs 2 column array (Time|Value)
 
     %Generate Table-Time matrix
@@ -498,6 +584,11 @@ if exist('R2_Ch14')==1
     table_end_time = table_time_length/(1/table_time_interval);
     table_timematrix = (table_time_start:table_time_interval:table_end_time);
     table_timematrix = table_timematrix' ;
+    [w,x]= size(table_timematrix);
+    [y,z] = size(R2_Ch12.values);
+    if w-y==1
+        table_timematrix(1,:)=[];
+    end
     table_time_data = horzcat(table_timematrix,R2_Ch12.values);
 
     %Generate Carotid-Time Matricies
@@ -507,6 +598,11 @@ if exist('R2_Ch14')==1
     carotid_end_time = carotid_time_length/(1/carotid_time_interval);
     carotid_timematrix = (carotid_time_start:carotid_time_interval:carotid_end_time);
     carotid_timematrix = carotid_timematrix' ;
+      [w,x]= size(carotid_timematrix);
+    [y,z] = size(R2_Ch13.values);
+    if w-y==1
+        carotid_timematrix(1,:)=[];
+    end
     carotid_time_data = horzcat(carotid_timematrix,R2_Ch13.values);
 
     %Declare HR times
@@ -944,6 +1040,11 @@ if exist('R3_Ch14')==1
     light_end_time = light_time_length/(1/light_time_interval);
     light_timematrix = (light_time_start:light_time_interval:light_end_time); %Generates an array with time based on start time, end time, recording interval.
     light_timematrix = light_timematrix' ; %Transposes light array.
+    [w,x]= size(light_timematrix);
+    [y,z] = size(R3_Ch14.values);
+    if w-y==1
+        light_timematrix(1,:)=[];
+    end
     light_time_data = horzcat(light_timematrix,R3_Ch14.values); %Constructs 2 column array (Time|Value)
 
     %Generate Table-Time matrix
@@ -954,6 +1055,11 @@ if exist('R3_Ch14')==1
     table_end_time = table_time_length/(1/table_time_interval);
     table_timematrix = (table_time_start:table_time_interval:table_end_time);
     table_timematrix = table_timematrix' ;
+    [w,x]= size(table_timematrix);
+    [y,z] = size(R3_Ch12.values);
+    if w-y==1
+        table_timematrix(1,:)=[];
+    end
     table_time_data = horzcat(table_timematrix,R3_Ch12.values);
 
     %Generate Carotid-Time Matricies
@@ -963,6 +1069,11 @@ if exist('R3_Ch14')==1
     carotid_end_time = carotid_time_length/(1/carotid_time_interval);
     carotid_timematrix = (carotid_time_start:carotid_time_interval:carotid_end_time);
     carotid_timematrix = carotid_timematrix' ;
+      [w,x]= size(carotid_timematrix);
+    [y,z] = size(R3_Ch13.values);
+    if w-y==1
+        carotid_timematrix(1,:)=[];
+    end
     carotid_time_data = horzcat(carotid_timematrix,R3_Ch13.values);
 
     %Declare HR times
@@ -1400,6 +1511,11 @@ if exist('R4_Ch14')==1
     light_end_time = light_time_length/(1/light_time_interval);
     light_timematrix = (light_time_start:light_time_interval:light_end_time); %Generates an array with time based on start time, end time, recording interval.
     light_timematrix = light_timematrix' ; %Transposes light array.
+    [w,x]= size(light_timematrix);
+    [y,z] = size(R4_Ch14.values);
+    if w-y==1
+        light_timematrix(1,:)=[];
+    end
     light_time_data = horzcat(light_timematrix,R4_Ch14.values); %Constructs 2 column array (Time|Value)
 
     %Generate Table-Time matrix
@@ -1410,6 +1526,11 @@ if exist('R4_Ch14')==1
     table_end_time = table_time_length/(1/table_time_interval);
     table_timematrix = (table_time_start:table_time_interval:table_end_time);
     table_timematrix = table_timematrix' ;
+   [w,x]= size(table_timematrix);
+    [y,z] = size(R4_Ch12.values);
+    if w-y==1
+        table_timematrix(1,:)=[];
+    end
     table_time_data = horzcat(table_timematrix,R4_Ch12.values);
 
     %Generate Carotid-Time Matricies
@@ -1419,6 +1540,11 @@ if exist('R4_Ch14')==1
     carotid_end_time = carotid_time_length/(1/carotid_time_interval);
     carotid_timematrix = (carotid_time_start:carotid_time_interval:carotid_end_time);
     carotid_timematrix = carotid_timematrix' ;
+      [w,x]= size(carotid_timematrix);
+    [y,z] = size(R4_Ch13.values);
+    if w-y==1
+        carotid_timematrix(1,:)=[];
+    end
     carotid_time_data = horzcat(carotid_timematrix,R4_Ch13.values);
 
     %Declare HR times
@@ -1856,6 +1982,11 @@ if exist('R5_Ch14')==1
     light_end_time = light_time_length/(1/light_time_interval);
     light_timematrix = (light_time_start:light_time_interval:light_end_time); %Generates an array with time based on start time, end time, recording interval.
     light_timematrix = light_timematrix' ; %Transposes light array.
+    [w,x]= size(light_timematrix);
+    [y,z] = size(R5_Ch14.values);
+    if w-y==1
+        light_timematrix(1,:)=[];
+    end
     light_time_data = horzcat(light_timematrix,R5_Ch14.values); %Constructs 2 column array (Time|Value)
 
     %Generate Table-Time matrix
@@ -1866,6 +1997,11 @@ if exist('R5_Ch14')==1
     table_end_time = table_time_length/(1/table_time_interval);
     table_timematrix = (table_time_start:table_time_interval:table_end_time);
     table_timematrix = table_timematrix' ;
+   [w,x]= size(table_timematrix);
+    [y,z] = size(R5_Ch12.values);
+    if w-y==1
+        table_timematrix(1,:)=[];
+    end
     table_time_data = horzcat(table_timematrix,R5_Ch12.values);
 
     %Generate Carotid-Time Matricies
@@ -1875,6 +2011,11 @@ if exist('R5_Ch14')==1
     carotid_end_time = carotid_time_length/(1/carotid_time_interval);
     carotid_timematrix = (carotid_time_start:carotid_time_interval:carotid_end_time);
     carotid_timematrix = carotid_timematrix' ;
+      [w,x]= size(carotid_timematrix);
+    [y,z] = size(R5_Ch13.values);
+    if w-y==1
+        carotid_timematrix(1,:)=[];
+    end
     carotid_time_data = horzcat(carotid_timematrix,R5_Ch13.values);
 
     %Declare HR times
@@ -2310,6 +2451,11 @@ if exist('R6_Ch14')==1
     light_end_time = light_time_length/(1/light_time_interval);
     light_timematrix = (light_time_start:light_time_interval:light_end_time); %Generates an array with time based on start time, end time, recording interval.
     light_timematrix = light_timematrix' ; %Transposes light array.
+    [w,x]= size(light_timematrix);
+    [y,z] = size(R6_Ch14.values);
+    if w-y==1
+        light_timematrix(1,:)=[];
+    end
     light_time_data = horzcat(light_timematrix,R6_Ch14.values); %Constructs 2 column array (Time|Value)
 
     %Generate Table-Time matrix
@@ -2320,6 +2466,11 @@ if exist('R6_Ch14')==1
     table_end_time = table_time_length/(1/table_time_interval);
     table_timematrix = (table_time_start:table_time_interval:table_end_time);
     table_timematrix = table_timematrix' ;
+    [w,x]= size(table_timematrix);
+    [y,z] = size(R6_Ch12.values);
+    if w-y==1
+        table_timematrix(1,:)=[];
+    end
     table_time_data = horzcat(table_timematrix,R6_Ch12.values);
 
     %Generate Carotid-Time Matricies
@@ -2329,6 +2480,11 @@ if exist('R6_Ch14')==1
     carotid_end_time = carotid_time_length/(1/carotid_time_interval);
     carotid_timematrix = (carotid_time_start:carotid_time_interval:carotid_end_time);
     carotid_timematrix = carotid_timematrix' ;
+    [w,x]= size(carotid_timematrix);
+    [y,z] = size(R6_Ch13.values);
+    if w-y==1
+        carotid_timematrix(1,:)=[];
+    end
     carotid_time_data = horzcat(carotid_timematrix,R6_Ch13.values);
 
     %Declare HR times
@@ -2757,3 +2913,6 @@ if exist('R6_Ch14')==1
     end
 end
 end
+
+
+
